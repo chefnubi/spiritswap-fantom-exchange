@@ -1,0 +1,149 @@
+type SpiritswapFactory @entity {
+  # factory address
+  id: ID!
+
+  # pair info
+  pairCount: Int!
+
+  # total volume
+  totalVolumeUSD: BigDecimal!
+  totalVolumeFTM: BigDecimal!
+
+  # untracked values - less confident USD scores
+  untrackedVolumeUSD: BigDecimal!
+
+  # total liquidity
+  totalLiquidityUSD: BigDecimal!
+  totalLiquidityFTM: BigDecimal!
+
+  # transactions
+  txCount: BigInt!
+}
+
+type Token @entity {
+  # token address
+  id: ID!
+
+  # mirrored from the smart contract
+  symbol: String!
+  name: String!
+  decimals: BigInt!
+
+  # used for other stats like marketcap
+  totalSupply: BigInt!
+
+  # token specific volume
+  tradeVolume: BigDecimal!
+  tradeVolumeUSD: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+
+  # transactions across all pairs
+  txCount: BigInt!
+
+  # liquidity across all pairs
+  totalLiquidity: BigDecimal!
+
+  # derived prices
+  derivedFTM: BigDecimal
+
+}
+
+type Pair @entity {
+  # pair address
+  id: ID!
+
+  # mirrored from the smart contract
+  token0: Token!
+  token1: Token!
+  reserve0: BigDecimal!
+  reserve1: BigDecimal!
+  totalSupply: BigDecimal!
+
+  # derived liquidity
+  reserveFTM: BigDecimal!
+  reserveUSD: BigDecimal!
+  trackedReserveFTM: BigDecimal! # used for separating per pair reserves and global
+  # Price in terms of the asset pair
+  token0Price: BigDecimal!
+  token1Price: BigDecimal!
+
+  # lifetime volume stats
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
+  volumeUSD: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  txCount: BigInt!
+
+  # creation stats
+  createdAtTimestamp: BigInt!
+  createdAtBlockNumber: BigInt!
+
+}
+
+# stores for USD calculations
+type Bundle @entity {
+  id: ID!
+  ftmPrice: BigDecimal! # price of FTM usd
+}
+
+# Data accumulated and condensed into day stats for all of Spiritswap
+type SpiritswapDayData @entity {
+  id: ID! # timestamp rounded to current day by dividing by 86400
+  date: Int!
+
+  dailyVolumeFTM: BigDecimal!
+  dailyVolumeUSD: BigDecimal!
+  dailyVolumeUntracked: BigDecimal!
+
+  totalVolumeFTM: BigDecimal!
+  totalLiquidityFTM: BigDecimal!
+  totalVolumeUSD: BigDecimal! # Accumulate at each trade, not just calculated off whatever totalVolume is. making it more accurate as it is a live conversion
+  totalLiquidityUSD: BigDecimal!
+
+  txCount: BigInt!
+}
+
+# Data accumulated and condensed into day stats for each exchange
+type PairDayData @entity {
+  id: ID!
+  date: Int!
+  pairAddress: Bytes!
+  token0: Token!
+  token1: Token!
+
+  # reserves
+  reserve0: BigDecimal!
+  reserve1: BigDecimal!
+
+  # total supply for LP historical returns
+  totalSupply: BigDecimal!
+
+  # derived liquidity
+  reserveUSD: BigDecimal!
+
+  # volume stats
+  dailyVolumeToken0: BigDecimal!
+  dailyVolumeToken1: BigDecimal!
+  dailyVolumeUSD: BigDecimal!
+  dailyTxns: BigInt!
+}
+
+type TokenDayData @entity {
+  id: ID!
+  date: Int!
+  token: Token!
+
+  # volume stats
+  dailyVolumeToken: BigDecimal!
+  dailyVolumeFTM: BigDecimal!
+  dailyVolumeUSD: BigDecimal!
+  dailyTxns: BigInt!
+
+  # liquidity stats
+  totalLiquidityToken: BigDecimal!
+  totalLiquidityFTM: BigDecimal!
+  totalLiquidityUSD: BigDecimal!
+
+  # price stats
+  priceUSD: BigDecimal!
+}

@@ -1,0 +1,22 @@
+{
+  "name": "spiritswap-fantom-exchange-subgraph",
+  "description": "Spiritswap Fantom AMM Exchange data. Reduced scope to ensure faster indexing.",
+  "version": "1.0.0",
+  "repository": "",
+  "license": "MIT",
+  "scripts": {
+    "codegen": "graph codegen --output-dir src/types/",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ chrisjess/spiritswap-fantom-exchange"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.20.1",
+    "@graphprotocol/graph-ts": "^0.20.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "eslint": "^7.29.0",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.3.1",
+    "typescript": "^4.3.4"
+  }
+}
